@@ -1,12 +1,14 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { AuthProvider } from "@/api/AuthContext";
+import { AuthProvider, AuthContext } from "@/api/AuthContext";
 import { Sidebar } from "@/components/Sidebar";
-
+import { useContext } from "react";
 export default function App({ Component, pageProps }: AppProps) {
+  const auth = useContext(AuthContext);
+
   return (
     <AuthProvider>
-      <div className="w-full min-h-full flex flex-row">
+      <div className="w-full flex flex-row" style={{ height: "100vh" }}>
         <Sidebar/>
         <Component {...pageProps} />
       </div>

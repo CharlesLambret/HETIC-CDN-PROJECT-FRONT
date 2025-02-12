@@ -21,7 +21,7 @@ export const Sidebar = () => {
     auth: [
       {
         icon: <FileSVG className={className} fill={fill} />,
-        text: "Files",
+        text: "Fichiers",
       },
       {
         icon: <PhotosSVG className={className} fill={fill} />,
@@ -39,7 +39,7 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/6 p-5">
+    <div className="flex flex-col w-1/6 p-5 shadow-lg h-full">
       <div className="flex flex-col gap-4 p-3">
         {SidebarItems.base.map((item, index) => (
           <div
