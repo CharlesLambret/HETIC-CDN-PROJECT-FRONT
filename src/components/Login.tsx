@@ -23,7 +23,7 @@ const Login = () => {
     if (response.ok) {
       const data = await response.json();
       login({ id: data.userID, email }, data.token);      
-      window.location.href = '/dashboard';
+      window.location.href = '/Dashboard';
     } else {
       alert('Login failed');
     }
