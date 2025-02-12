@@ -1,9 +1,15 @@
 // components/Login.js
-import { useState } from 'react';
-
+import { useState, useContext} from 'react';
+import { AuthContext } from '@/api/AuthContext';
 const Login = () => {
+  const auth = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  if (!auth) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { login } = auth;
 
   const handleLogin = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
@@ -15,7 +21,8 @@ const Login = () => {
     });
 
     if (response.ok) {
-      // Rediriger vers la page du dashboard
+      const data = await response.json();
+      login({ id: data.userID, email }, data.token);      
       window.location.href = '/dashboard';
     } else {
       alert('Login failed');
