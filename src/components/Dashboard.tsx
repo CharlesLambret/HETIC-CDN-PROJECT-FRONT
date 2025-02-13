@@ -6,6 +6,8 @@ import SearchBar from './searchbar';
 import ItemsTable from './itemTable';
 import { FolderWithFiles, File } from './itemTable';
 import FileModal from './fileModal';
+import CreateFileModal from './createFileModal';
+import BackArrowSVG from './SVG/Documents copy';
 
 interface DashboardData {
   folders: FolderWithFiles[];
@@ -20,6 +22,7 @@ const Dashboard: React.FC = () => {
   const [currentFolder, setCurrentFolder] = useState<FolderWithFiles | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (auth?.user) {
@@ -77,7 +80,13 @@ const Dashboard: React.FC = () => {
     setIsModalOpen(false);
     setSelectedFile(null);
   };
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
 
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
   return (
     <div className="px-6 flex justify-center w-3/5 mx-auto py-5">
       <div className="layout-content-container flex flex-col flex-1">
@@ -85,6 +94,9 @@ const Dashboard: React.FC = () => {
           <h1 className="text-[#141414] tracking-light text-[32px] font-bold leading-tight min-w-72">
             {currentFolder ? currentFolder.Folder.Name : 'Fichiers'}
           </h1>
+          <button onClick={handleOpenCreateModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Upload File
+          </button>
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <div className="flex gap-3 p-3 flex-wrap pr-4">
@@ -96,9 +108,10 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="px-4 py-3 @container">
           {currentFolder && (
-            <button onClick={handleBackClick} className="mb-4 text-blue-500 hover:underline">
-              Retour
-            </button>
+            <div className="w-1/6 py-2">
+                        <BackArrowSVG className="w-1/6 text-gray-500 hover:text-blue-500 cursor-pointer" fill="currentColor" onClick={handleBackClick} />
+
+            </div>
           )}
           <ItemsTable folders={filteredFolders} files={filteredFiles} tableCols={tableCols} onFolderClick={handleFolderClick} onFileClick={handleFileClick} />
         </div>
@@ -111,6 +124,11 @@ const Dashboard: React.FC = () => {
           uploaderId={selectedFile.UploaderID}
         />
       )}
+      <CreateFileModal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        folders={data?.folders || null}
+      />
     </div>
   );
 };
