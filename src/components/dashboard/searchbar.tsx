@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchSVG from './SVG/search';
+import SearchSVG from '../SVG/search';
 
 interface SearchBarProps {
   searchTerm: string;

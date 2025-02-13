@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '@/api/AuthContext';
-import { FolderWithFiles } from './itemTable';
+import { FolderWithFiles } from './dashboard/table/itemTable';
 
 interface CreateFileModalProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { AuthProvider, AuthContext } from "@/api/AuthContext";
-import { Sidebar } from "@/components/Sidebar";
+import { Sidebar } from "@/components/sidebar/Sidebar";
 import { useContext } from "react";
 export default function App({ Component, pageProps }: AppProps) {
   const auth = useContext(AuthContext);

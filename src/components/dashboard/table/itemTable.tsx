@@ -1,7 +1,7 @@
 import React from 'react';
-import FileSVG from './SVG/Files';
-import PhotosSVG from './SVG/Photos';
-import DocumentSVG from './SVG/Documents';
+import FileSVG from '../../SVG/Files';
+import PhotosSVG from '../../SVG/Photos';
+import DocumentSVG from '../../SVG/Documents';
 
 export interface Folder {
   ID: string;
@@ -52,8 +52,8 @@ export interface ItemsTableProps {
 const ItemsTable: React.FC<ItemsTableProps> = ({ folders, files, tableCols, onFolderClick, onFileClick }) => {
   const renderFolderRow = (folder: FolderWithFiles) => (
     <tr key={folder.Folder.ID} className="border-t border-t-[#DBE1E6] p-3" onClick={() => onFolderClick(folder)}>
-      <td className="p-2 flex w-2/6 flex-row items-center cursor-pointer hover:text-blue-500 hover:underline">
-        <FileSVG className="w-1/6" fill="currentColor" />
+      <td className="p-2 flex w-2/6 w-full  flex-row items-center cursor-pointer hover:text-blue-500 hover:underline">
+        <FileSVG className="w-5" fill="currentColor" />
         {folder.Folder.Name}
       </td>
       <td>
@@ -69,18 +69,22 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ folders, files, tableCols, onFo
 
   const renderFileRow = (file: File) => (
     <tr key={file.ID} className="border-t border-t-[#DBE1E6]">
-      <td className="p-2 flex w-2/6 flex-row items-center cursor-pointer hover:text-blue-500 hover:underline" onClick={() => onFileClick(file)}>
+      <td className="p-2 flex w-2/6 flex-row items-center cursor-pointer hover:text-blue-500 hover:underline w-full" onClick={() => onFileClick(file)}>
         {file.FileType === 'image/jpeg' ? (
-          <PhotosSVG className="w-1/6" fill="currentColor" />
+          <PhotosSVG className="w-5" fill="currentColor" />
         ) : (
-          <DocumentSVG className="w-1/6" fill="currentColor" />
+          <DocumentSVG className="w-5" fill="currentColor" />
         )}
         {file.FileName}
       </td>
       <td className="p-2">
-        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#F0F2F5] text-[#141414] text-sm font-medium leading-normal w-full">
-          <span className="truncate">{file.FileType}</span>
-        </button>
+        <div className="flex flex-wrap gap-1 w-full">
+          {file.Metadata.tags.map((tag, index) => (
+            <span key={index} className="bg-[#F0F2F5] w-full text-center text-[#141414] text-sm font-medium leading-normal px-2 py-1 rounded">
+              {tag}
+            </span>
+          ))}
+        </div>
       </td>
       <td className="p-2">{`${(file.FileSize / 1024 / 1024).toFixed(2)} MB`}</td>
       <td className="p-2">{new Date(file.UploadedAt).toLocaleDateString()}</td>

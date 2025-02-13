@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import DocumentSVG from "./SVG/Documents";
-import FileSVG from "./SVG/Files";
-import HomeSVG from "./SVG/Home";
-import PhotosSVG from "./SVG/Photos";
-import TrashSVG from "./SVG/Trash";
+import DocumentSVG from "../SVG/Documents";
+import FileSVG from "../SVG/Files";
+import HomeSVG from "../SVG/Home";
+import PhotosSVG from "../SVG/Photos";
+import TrashSVG from "../SVG/Trash";
 import { AuthContext } from "@/api/AuthContext";
 
 export const Sidebar = () => {

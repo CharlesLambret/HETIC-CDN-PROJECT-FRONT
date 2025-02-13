@@ -1,33 +1,48 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '@/api/AuthContext';
-import DownloadSVG from './SVG/Download';
-import IframeComponent from './iframe';
+import DownloadSVG from '../../../SVG/Download';
+import CSVViewer from './csvViewer';
 
 interface FileModalProps {
   isOpen: boolean;
   onClose: () => void;
   fileId: string;
   uploaderId: string;
+  fileName: string; // Ajout du nom du fichier
 }
 
-const FileModal: React.FC<FileModalProps> = ({ isOpen, onClose, fileId, uploaderId }) => {
+const FileModal: React.FC<FileModalProps> = ({ isOpen, onClose, fileId, uploaderId, fileName }) => {
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [isImage, setIsImage] = useState(false);
+  const [isVideo, setIsVideo] = useState(false);
+  const [isPDF, setIsPDF] = useState(false);
   const auth = useContext(AuthContext);
 
+  const fileUrl= `${process.env.NEXT_PUBLIC_API_URL}/serve-file?id=${fileId}&uploaderID=${uploaderId}`;
   const fetchFile = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/serve-file?id=${fileId}&uploaderID=${uploaderId}`);
+      const response = await fetch(fileUrl);
       if (response.ok) {
         const contentType = response.headers.get('Content-Type');
+        
         if (contentType?.startsWith('image/')) {
           const blob = await response.blob();
           setFileContent(URL.createObjectURL(blob));
           setIsImage(true);
-        } else {
+        } else if (contentType?.startsWith('video/')) {
+          const blob = await response.blob();
+          setFileContent(URL.createObjectURL(blob));
+          setIsVideo(true);
+        } else if (contentType?.startsWith('pdf/')) {
+          const blob = await response.blob();
+          setFileContent(URL.createObjectURL(blob));
+          setIsPDF(true);
+        }
+         else {
           const content = await response.text();
           setFileContent(content);
           setIsImage(false);
+          setIsVideo(false);
         }
       } else {
         console.error('Failed to fetch file');
@@ -63,13 +78,14 @@ const FileModal: React.FC<FileModalProps> = ({ isOpen, onClose, fileId, uploader
         <h2 className="text-xl font-semibold mb-4">Fichier </h2>
         <div className="w-1/2 flex justify-start items-center">
             <DownloadSVG onClick={downloadFile} className="text-blue-500 w-1/6 cursor-pointer my-2" fill="currentColor"/>
-
         </div>
         {isImage ? (
           <img src={fileContent ? fileContent : ''} alt="File preview" className="w-full h-auto rounded" />
-        ) : (
-          <IframeComponent source={`${process.env.NEXT_PUBLIC_API_URL}/serve-file?id=${fileId}&uploaderID=${uploaderId}`} className="w-full" title={fileId}/>
-        )}
+        ) : fileName.endsWith('.csv') ? (
+          <CSVViewer csvData={fileContent ? fileContent : ''} />
+        ) :  fileName.endsWith('.pdf') ? (
+          <iframe src={fileContent ? fileContent : ''} className="w-full h-64 rounded" title={fileId}></iframe>
+        ) : ''}
       </div>
     </div>
   );

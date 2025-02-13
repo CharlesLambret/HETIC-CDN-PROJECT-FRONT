@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { AuthContext } from '@/api/AuthContext';
-import { LoggedOutComponent } from './errors/loggedout';
+import { LoggedOutComponent } from '../errors/loggedout';
 import SearchBar from './searchbar';
-import ItemsTable from './itemTable';
-import { FolderWithFiles, File } from './itemTable';
-import FileModal from './fileModal';
-import CreateFileModal from './createFileModal';
-import BackArrowSVG from './SVG/Documents copy';
+import ItemsTable from './table/itemTable';
+import { FolderWithFiles, File } from './table/itemTable';
+import FileModal from './modals/update/fileModal';
+import CreateFileModal from './modals/create/createFileModal';
+import BackArrowSVG from '../SVG/Documents copy';
 
 interface DashboardData {
   folders: FolderWithFiles[];
@@ -91,11 +91,24 @@ const Dashboard: React.FC = () => {
     <div className="px-6 flex justify-center w-3/5 mx-auto py-5">
       <div className="layout-content-container flex flex-col flex-1">
         <div className="flex flex-wrap justify-between gap-3 p-4">
-          <h1 className="text-[#141414] tracking-light text-[32px] font-bold leading-tight min-w-72">
-            {currentFolder ? currentFolder.Folder.Name : 'Fichiers'}
-          </h1>
-          <button onClick={handleOpenCreateModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Upload File
+            <h1 className="text-[#141414] tracking-light text-[32px] font-bold leading-tight min-w-72">
+            Fichiers {currentFolder ? `> ${currentFolder.Folder.Name}` : ''}
+            </h1>
+            {currentFolder && currentFolder.Subfolders && (
+            <div className="flex flex-wrap gap-3">
+              {currentFolder.Subfolders.map((subfolder) => (
+              <div
+                key={subfolder.Folder.ID}
+                className="bg-gray-200 p-2 rounded cursor-pointer hover:bg-gray-300"
+                onClick={() => handleFolderClick(subfolder)}
+              >
+                {subfolder.Folder.Name}
+              </div>
+              ))}
+            </div>
+            )}
+          <button onClick={handleOpenCreateModal} className="bg-gray-900 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Charger un fichier
           </button>
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -122,6 +135,7 @@ const Dashboard: React.FC = () => {
           onClose={handleCloseModal}
           fileId={selectedFile.ID}
           uploaderId={selectedFile.UploaderID}
+          fileName={selectedFile.FileName}
         />
       )}
       <CreateFileModal
