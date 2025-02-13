@@ -46,9 +46,10 @@ export interface ItemsTableProps {
   files: File[] | null;
   tableCols: string[];
   onFolderClick: (folder: FolderWithFiles) => void;
+  onFileClick: (file: File) => void;
 }
 
-const ItemsTable: React.FC<ItemsTableProps> = ({ folders, files, tableCols, onFolderClick }) => {
+const ItemsTable: React.FC<ItemsTableProps> = ({ folders, files, tableCols, onFolderClick, onFileClick }) => {
   const renderFolderRow = (folder: FolderWithFiles) => (
     <tr key={folder.Folder.ID} className="border-t border-t-[#DBE1E6] p-3" onClick={() => onFolderClick(folder)}>
       <td className="p-2 flex w-2/6 flex-row items-center cursor-pointer hover:text-blue-500 hover:underline">
@@ -68,7 +69,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ folders, files, tableCols, onFo
 
   const renderFileRow = (file: File) => (
     <tr key={file.ID} className="border-t border-t-[#DBE1E6]">
-      <td className="p-2 flex w-2/6 flex-row items-center ">
+      <td className="p-2 flex w-2/6 flex-row items-center cursor-pointer hover:text-blue-500 hover:underline" onClick={() => onFileClick(file)}>
         {file.FileType === 'image/jpeg' ? (
           <PhotosSVG className="w-1/6" fill="currentColor" />
         ) : (

@@ -5,6 +5,7 @@ import { LoggedOutComponent } from './errors/loggedout';
 import SearchBar from './searchbar';
 import ItemsTable from './itemTable';
 import { FolderWithFiles, File } from './itemTable';
+import FileModal from './fileModal';
 
 interface DashboardData {
   folders: FolderWithFiles[];
@@ -17,6 +18,8 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [currentFolder, setCurrentFolder] = useState<FolderWithFiles | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (auth?.user) {
@@ -61,8 +64,18 @@ const Dashboard: React.FC = () => {
     setCurrentFolder(folder);
   };
 
+  const handleFileClick = (file: File) => {
+    setSelectedFile(file);
+    setIsModalOpen(true);
+  };
+
   const handleBackClick = () => {
     setCurrentFolder(null);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedFile(null);
   };
 
   return (
@@ -70,7 +83,7 @@ const Dashboard: React.FC = () => {
       <div className="layout-content-container flex flex-col flex-1">
         <div className="flex flex-wrap justify-between gap-3 p-4">
           <h1 className="text-[#141414] tracking-light text-[32px] font-bold leading-tight min-w-72">
-            {currentFolder?  currentFolder.Folder.Name : 'Fichiers'}
+            {currentFolder ? currentFolder.Folder.Name : 'Fichiers'}
           </h1>
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -87,9 +100,17 @@ const Dashboard: React.FC = () => {
               Retour
             </button>
           )}
-          <ItemsTable folders={filteredFolders} files={filteredFiles} tableCols={tableCols} onFolderClick={handleFolderClick} />
+          <ItemsTable folders={filteredFolders} files={filteredFiles} tableCols={tableCols} onFolderClick={handleFolderClick} onFileClick={handleFileClick} />
         </div>
       </div>
+      {selectedFile && (
+        <FileModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          fileId={selectedFile.ID}
+          uploaderId={selectedFile.UploaderID}
+        />
+      )}
     </div>
   );
 };
