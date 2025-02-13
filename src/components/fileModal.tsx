@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '@/api/AuthContext';
 import DownloadSVG from './SVG/Download';
+import IframeComponent from './iframe';
 
 interface FileModalProps {
   isOpen: boolean;
@@ -67,7 +68,7 @@ const FileModal: React.FC<FileModalProps> = ({ isOpen, onClose, fileId, uploader
         {isImage ? (
           <img src={fileContent ? fileContent : ''} alt="File preview" className="w-full h-auto rounded" />
         ) : (
-          <pre className="bg-gray-100 p-4 rounded overflow-y">{fileContent}</pre>
+          <IframeComponent source={`${process.env.NEXT_PUBLIC_API_URL}/serve-file?id=${fileId}&uploaderID=${uploaderId}`} className="w-full" title={fileId}/>
         )}
       </div>
     </div>
